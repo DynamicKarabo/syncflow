@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # The Collaboration Server
+  hocuspocus:
+    image: node:18-alpine
+    working_dir: /app
+    command: sh -c "npm install @hocuspocus/server @hocuspocus/extension-database yjs && node index.mjs"
+    ports:
+      - "1234:1234"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+
+  # The Presence & Sync Memory
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
