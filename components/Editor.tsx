@@ -16,7 +16,7 @@ interface EditorProps {
 
 export const Editor: React.FC<EditorProps> = ({ provider, doc, user, onContentUpdate }) => {
   const [status, setStatus] = useState('connecting');
-  
+
   // Cursor Chat State
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
@@ -31,37 +31,39 @@ export const Editor: React.FC<EditorProps> = ({ provider, doc, user, onContentUp
       Collaboration.configure({
         document: doc || undefined,
       }),
-      CollaborationCursor.configure({
-        provider: provider || undefined,
-        user: {
-          name: user.name,
-          color: user.color,
-        },
-      }),
+      ...(provider ? [
+        CollaborationCursor.configure({
+          provider: provider,
+          user: {
+            name: user.name,
+            color: user.color,
+          },
+        })
+      ] : []),
     ],
     editorProps: {
-        attributes: {
-            class: 'prose prose-invert prose-zinc max-w-none focus:outline-none min-h-[500px] text-zinc-300',
-        },
+      attributes: {
+        class: 'prose prose-invert prose-zinc max-w-none focus:outline-none min-h-[500px] text-zinc-300',
+      },
     },
     onUpdate: ({ editor }) => {
-        const text = editor.getText();
-        onContentUpdate(text);
+      const text = editor.getText();
+      onContentUpdate(text);
     }
   }, [doc, provider]);
 
   // Sync loading state
   useEffect(() => {
-      if(!provider) return;
-      
-      const onStatus = () => {
-          setStatus(provider.status);
-      }
-      
-      provider.on('status', onStatus);
-      return () => {
-          provider.off('status', onStatus);
-      }
+    if (!provider) return;
+
+    const onStatus = () => {
+      setStatus(provider.status);
+    }
+
+    provider.on('status', onStatus);
+    return () => {
+      provider.off('status', onStatus);
+    }
   }, [provider]);
 
   // Handle Cursor Chat Trigger (/)
@@ -73,11 +75,11 @@ export const Editor: React.FC<EditorProps> = ({ provider, doc, user, onContentUp
       if (e.key === '/' && !isChatOpen) {
         // Prevent the '/' from being typed into the editor
         e.preventDefault();
-        
+
         const { from } = editor.state.selection;
         // Get screen coordinates for the cursor position
         const coords = editor.view.coordsAtPos(from);
-        
+
         // Adjust coordinates to sit slightly above the line
         // Note: coordsAtPos returns { top, bottom, left, right }
         const x = coords.left;
@@ -138,9 +140,9 @@ export const Editor: React.FC<EditorProps> = ({ provider, doc, user, onContentUp
 
   if (!editor || !doc || !provider) {
     return (
-        <div className="flex items-center justify-center h-full text-zinc-500">
-            Loading Editor...
-        </div>
+      <div className="flex items-center justify-center h-full text-zinc-500">
+        Loading Editor...
+      </div>
     );
   }
 
@@ -152,18 +154,18 @@ export const Editor: React.FC<EditorProps> = ({ provider, doc, user, onContentUp
 
       {/* Local Cursor Chat Input */}
       {isChatOpen && (
-        <div 
+        <div
           className="fixed z-50 flex flex-col items-start"
-          style={{ 
-            left: chatCoords.x, 
-            top: chatCoords.y 
+          style={{
+            left: chatCoords.x,
+            top: chatCoords.y
           }}
         >
-          <div 
+          <div
             className="px-3 py-2 rounded-xl rounded-tl-none shadow-xl text-sm font-medium text-white min-w-[120px]"
             style={{ backgroundColor: user.color }}
           >
-             <input
+            <input
               ref={chatInputRef}
               type="text"
               value={chatMessage}
