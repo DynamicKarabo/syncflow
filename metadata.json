@@ -1,0 +1,5 @@
+{
+  "name": "SyncFlow",
+  "description": "A minimalist, real-time collaborative workspace prototype featuring dark mode, AI-powered summarization, and a simulated 'Ghost Mode' to demonstrate concurrent user interactions.",
+  "requestFramePermissions": []
+}
