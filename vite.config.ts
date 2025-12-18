@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        'yjs': path.resolve(__dirname, 'node_modules/yjs/dist/yjs.mjs'),
       },
       dedupe: [
         'yjs',
@@ -30,12 +31,5 @@ export default defineConfig(({ mode }) => {
         'prosemirror-transform',
       ],
     },
-    optimizeDeps: {
-      exclude: [
-        'yjs',
-        'y-protocols',
-        'y-prosemirror',
-      ]
-    }
   };
 });
